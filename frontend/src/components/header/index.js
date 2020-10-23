@@ -3,8 +3,15 @@ import { Navbar, Nav, Container } from "react-bootstrap";
 
 const Header = () => {
   return (
-    <header>
-      <Navbar bg="dark" variant="dark" expand="lg" collapseOnSelect>
+    <header style={{ marginBottom: "4rem" }}>
+      <Navbar
+        bg="dark"
+        variant="dark"
+        expand="lg"
+        fixed="top"
+        collapseOnSelect
+        style={{ padding: "0.5rem" }}
+      >
         <Container>
           <Navbar.Brand href="/">ProShop</Navbar.Brand>
           <Navbar.Toggle aria-controls="basic-navbar-nav" />
