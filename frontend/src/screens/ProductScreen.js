@@ -1,10 +1,23 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 import { Link } from "react-router-dom";
 import { Row, Col, Image, ListGroup, Card, Button } from "react-bootstrap";
 import Rating from "../components/rating";
-import products from "../products";
+
 const ProductScreen = ({ match }) => {
-  const product = products.find((product) => product._id === match.params.id);
+  const [product, setProduct] = useState([]);
+  useEffect(() => {
+    const getProduct = async () => {
+      try {
+        const res = await axios.get(`/api/products/${match.params.id}`);
+        setProduct(res.data);
+      } catch (error) {
+        console.error(error.message);
+      }
+    };
+    getProduct();
+  }, []);
+
   const inStock = product.countInStock > 0 ? "In Stock" : "Out Of Stock";
   return (
     <>
