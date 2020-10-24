@@ -1,5 +1,5 @@
 import React from "react";
-import './styles.scss'
+import "./styles.scss";
 const Rating = ({ value, text, color }) => {
   const stars = (value, length) => {
     const createArr = Array(length).fill(0);
@@ -29,6 +29,6 @@ const Rating = ({ value, text, color }) => {
   );
 };
 Rating.defaultProps = {
-  color: "#F8e825",
+  color: "#FA8320",
 };
 export default Rating;
