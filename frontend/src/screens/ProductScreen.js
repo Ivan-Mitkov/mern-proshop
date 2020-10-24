@@ -11,12 +11,13 @@ const ProductScreen = ({ match }) => {
       try {
         const res = await axios.get(`/api/products/${match.params.id}`);
         setProduct(res.data);
+        console.log('Use effect product')
       } catch (error) {
         console.error(error.message);
       }
     };
     getProduct();
-  }, []);
+  }, [match]);
 
   const inStock = product.countInStock > 0 ? "In Stock" : "Out Of Stock";
   return (
