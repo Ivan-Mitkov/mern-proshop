@@ -24,7 +24,9 @@ router.get(
     if (product) {
       return res.json(product);
     }
-    return res.status(404).json({ msg: "product not found" });
+    res.status(404);
+    //throw error wich is handled by custom error handler
+    throw new Error("Product not found");
   })
 );
 export default router;
