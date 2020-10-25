@@ -8,12 +8,12 @@ import Message from "../components/message";
 const HomeScreen = () => {
   const dispatch = useDispatch();
 
-  const productList = useSelector((state) => state.productList);
+  const productList = useSelector((state) => state.productList, shallowEqual);
   const { products, loading, error } = productList;
 
   useEffect(() => {
     dispatch(listProducts());
-    console.log("Use effect", products);
+    console.log("Use effect Home");
   }, [dispatch]);
 
   return (
