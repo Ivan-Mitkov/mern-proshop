@@ -3,16 +3,17 @@ import dotenv from "dotenv";
 import colors from "colors";
 import connectDB from "./config/db.js";
 import productRoutes from "./routes/productRoutes.js";
+import userRoutes from "./routes/userRoutes.js";
 import { notFound, errorHandler } from "./middleware/errorMiddleware.js";
 dotenv.config();
 //CONNECT TO DB
 connectDB();
 ///
 const app = express();
-app.get("/", (req, res) => {
-  res.send("API is running");
-});
-
+//get request.body
+app.use(express.json());
+//routes
+app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 //Custom error handler middleware
 app.use(notFound);
