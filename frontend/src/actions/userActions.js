@@ -33,3 +33,9 @@ export const login = (email, password) => async (dispatch) => {
     });
   }
 };
+export const logout = () => (dispatch) => {
+  //clear state
+  dispatch({ type: USER_LOGOUT });
+  //clear local storage
+  localStorage.removeItem("userInfo");
+};
