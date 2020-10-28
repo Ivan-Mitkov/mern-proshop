@@ -78,5 +78,34 @@ const getUserProfile = asyncHandler(async (req, res) => {
     throw new Error("user not found");
   }
 });
+//@desc UPDATE user profile
+//@route PUT /api/users/profile
+//@private
+const updateUserProfile = asyncHandler(async (req, res) => {
+  //get id from req object where middleware save user
+  //user is logeed in so there is token
+  //find this user in db
+  const user = await User.findById(req.user._id);
+  if (user) {
+    (user.name = req.body.name || user.name),
+      (user.email = req.body.email || user.email);
+    if (req.body.password) {
+      //encrypted in model
+      user.password = req.body.password;
+    }
 
-export { authUser, getUserProfile, createUser };
+    const updatedUser = await user.save();
+    return res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+      token: generateToken(updatedUser._id),
+    });
+  } else {
+    res.status(404);
+    throw new Error("user not found");
+  }
+});
+
+export { authUser, getUserProfile, createUser, updateUserProfile };
