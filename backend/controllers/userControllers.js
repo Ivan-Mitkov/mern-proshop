@@ -5,6 +5,7 @@ import generateToken from "../utils/generateToken.js";
 //@route POST /api/users
 //@public
 const createUser = asyncHandler(async (req, res) => {
+  //get user data from frontend
   const { name, email, password } = req.body;
   //find IF user in db
   const user = await User.findOne({ email });
@@ -14,9 +15,12 @@ const createUser = asyncHandler(async (req, res) => {
     throw new Error("User already exists");
   }
   //password is still plain text
+  //encrypt password in User Model
   const newUser = await User.create({ name, email, password });
+  //if new user is created in DB
   if (newUser) {
     //send back same data as with login
+    //generate token
     res.status(201).json({
       _id: newUser._id,
       name: newUser.name,
@@ -34,12 +38,14 @@ const createUser = asyncHandler(async (req, res) => {
 //@route POST /api/users/login
 //@public
 const authUser = asyncHandler(async (req, res) => {
+  //get login data from front end
   const { email, password } = req.body;
   //find user in db
   const user = await User.findOne({ email });
   //if there is such user and password is correct
   if (user && (await user.matchPassword(password))) {
     // return that user
+    //generate token
     return res.json({
       _id: user._id,
       name: user.name,
@@ -57,6 +63,7 @@ const authUser = asyncHandler(async (req, res) => {
 //@private
 const getUserProfile = asyncHandler(async (req, res) => {
   //get id from req object where middleware save user
+  //user is logeed in so there is token
   //find this user in db
   const user = await User.findById(req.user._id);
   if (user) {
