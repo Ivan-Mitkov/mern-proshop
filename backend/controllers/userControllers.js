@@ -66,6 +66,7 @@ const getUserProfile = asyncHandler(async (req, res) => {
   //user is logeed in so there is token
   //find this user in db
   const user = await User.findById(req.user._id);
+  // console.log("get user profile", user);
   if (user) {
     return res.json({
       _id: user._id,

@@ -10,6 +10,10 @@ import {
   USER_DETAILS_FAIL,
   USER_DETAILS_REQUEST,
   USER_DETAILS_SUCCESS,
+  CLEAR_USER_DETAILS,
+  USER_UPDATE_SUCCESS,
+  USER_UPDATE_FAIL,
+  USER_UPDATE_REQUEST,
 } from "../constants/userConsts";
 
 export const login = (email, password) => async (dispatch) => {
@@ -42,6 +46,7 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   //clear state
   dispatch({ type: USER_LOGOUT });
+  dispatch({type:CLEAR_USER_DETAILS})
   //clear local storage
   localStorage.removeItem("userInfo");
 };
@@ -79,17 +84,49 @@ export const getUserDetails = (id) => async (dispatch, getState) => {
     const {
       userLogin: { userInfo },
     } = getState();
+    //add token
     const config = {
       headers: {
-        "Content-Type": "application/json",
-        Authorisation: `Bearer ${userInfo.token}`,
+        Authorization: `Bearer ${userInfo.token}`,
       },
     };
     const { data } = await axios.get(`/api/users/${id}`, config);
+    // console.log('actions data:',data)
     dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
       type: USER_DETAILS_FAIL,
+      payload:
+        error.response && error.response.data.message
+          ? error.response.data.message
+          : error.message,
+    });
+  }
+};
+export const updateUserDetails = (user) => async (dispatch, getState) => {
+  try {
+    dispatch({ type: USER_UPDATE_REQUEST });
+    const {
+      userLogin: { userInfo },
+    } = getState();
+    //add token
+    const config = {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${userInfo.token}`,
+      },
+    };
+    const { data } = await axios.put(`/api/users/profile`, user, config);
+    // console.log('actions data:',data)
+    //update user and save the same user in state for login and for profile
+    dispatch({ type: USER_UPDATE_SUCCESS, payload: data });
+    dispatch({ type: USER_LOGIN_SUCCESS, payload: data });
+    dispatch({ type: USER_DETAILS_SUCCESS, payload: data });
+    //save updated user in local storage
+    localStorage.setItem("userInfo", JSON.stringify(data));
+  } catch (error) {
+    dispatch({
+      type: USER_UPDATE_FAIL,
       payload:
         error.response && error.response.data.message
           ? error.response.data.message
