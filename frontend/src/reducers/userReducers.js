@@ -76,6 +76,8 @@ export const userDetailReducer = (state = {}, action) => {
     case USER_DETAILS_REQUEST:
       return {
         ...state,
+        user:null,
+        error:'',
         loading: true,
       };
     case USER_DETAILS_SUCCESS:
@@ -88,6 +90,7 @@ export const userDetailReducer = (state = {}, action) => {
     case USER_DETAILS_FAIL:
       return {
         ...state,
+        user:null,
         error: payload,
         loading: false,
       };
@@ -103,6 +106,7 @@ export const userUpdateDetailReducer = (state = {}, action) => {
     case USER_UPDATE_REQUEST:
       return {
         ...state,
+        userInfo:null,
         success: false,
         loading: true,
       };
@@ -117,6 +121,7 @@ export const userUpdateDetailReducer = (state = {}, action) => {
     case USER_UPDATE_FAIL:
       return {
         ...state,
+        userInfo:null,
         error: payload,
         success: false,
         loading: false,

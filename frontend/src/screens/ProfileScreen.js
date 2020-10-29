@@ -16,12 +16,10 @@ const ProfileScreen = ({ location, history }) => {
 
   const userDetail = useSelector((state) => state.userDetail);
   const { loading, error, user } = userDetail;
-  console.log("user", user);
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
   const userUpdateDetail = useSelector((state) => state.userUpdateDetail);
   const { success } = userUpdateDetail;
-  console.log("success:", success);
 
   useEffect(() => {
     //check if user is logged in
