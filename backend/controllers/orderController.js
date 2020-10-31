@@ -36,14 +36,42 @@ const addOrder = asyncHandler(async (req, res) => {
 //@route Get /api/orders/:id
 //@private
 const getOrder = asyncHandler(async (req, res) => {
-  const order = await Order.findById(req.params.id).populate('user','name email');
+  const order = await Order.findById(req.params.id).populate(
+    "user",
+    "name email"
+  );
 
   if (!order) {
     res.status(404);
     throw new Error("Order not found");
-  } 
-    return res.json(order);
-  
+  }
+  return res.json(order);
 });
 
-export { addOrder,getOrder };
+//@desc Update order to piad
+//@route PUT /api/orders/:id/pay
+//@private
+const updateOrderToPaid = asyncHandler(async (req, res) => {
+  const orupdateOrderToPaidder = await Order.findById(req.params.id).populate(
+    "user",
+    "name email"
+  );
+
+  if (!order) {
+    res.status(404);
+    throw new Error("Order not found");
+  }
+  order.isPaid = true;
+  order.paidAt = Date.now();
+  //from PayPal response
+  order.paymentResult = {
+    id: req.body.id,
+    status: req.body.status,
+    update_time: req.body.update_time,
+    email_address: req.body.payer.email_address,
+  };
+  const updatedOrder = await order.save();
+  return res.json(updatedOrder);
+});
+
+export { addOrder, getOrder, updateOrderToPaid };
