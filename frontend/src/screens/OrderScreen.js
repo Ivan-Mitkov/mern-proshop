@@ -1,16 +1,22 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch, useSelector, shallowEqual } from "react-redux";
 import Message from "../components/message";
 import Loader from "../components/loader";
-import { getOrderDetails } from "../actions/orderActions";
+import { getOrderDetails, getMyOrders } from "../actions/orderActions";
+import { confirmPayment } from "../actions/cartActions";
+import { payOrder } from "../actions/orderActions";
+import { ORDER_PAY_RESET } from "../constants/orderConsts";
 
-const OrderScreen = ({ match }) => {
+const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id;
   const dispatch = useDispatch();
   const orderDetails = useSelector((state) => state.orderDetails);
-
+  const { success, loading: payLoading } = useSelector(
+    (state) => state.orderPay
+  );
+  console.log("Paid success", success);
   const { order, loading, error } = orderDetails;
   //Calculate Prices
   if (order) {
@@ -19,11 +25,16 @@ const OrderScreen = ({ match }) => {
     );
   }
   useEffect(() => {
-    if (!order || order._id !== orderId) {
+    if (!order || success||order._id !== orderId) {
+      dispatch({ type: ORDER_PAY_RESET });
+
       dispatch(getOrderDetails(orderId));
     }
-  }, [order, orderId]);
-
+  }, [order, orderId, dispatch, payOrder, success]);
+  const handleConfirm = () => {
+    dispatch(confirmPayment());
+    dispatch(payOrder(orderId));
+  };
   return loading ? (
     <Loader></Loader>
   ) : error ? (
@@ -149,7 +160,11 @@ const OrderScreen = ({ match }) => {
               </ListGroup.Item>
 
               <ListGroup.Item>
-                <Button variant="primary">Confirm Payment</Button>
+                {!order.isPaid && (
+                  <Button variant="primary" onClick={handleConfirm}>
+                    Confirm Payment
+                  </Button>
+                )}
               </ListGroup.Item>
             </ListGroup>
           </Card>

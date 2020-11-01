@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
-import { Form, Button, Row, Col } from "react-bootstrap";
+import { Form, Button, Row, Col, Table } from "react-bootstrap";
+import { LinkContainer } from "react-router-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/message";
 import Loader from "../components/loader";
 import { getUserDetails, updateUserDetails } from "../actions/userActions";
+import { getMyOrders } from "../actions/orderActions";
 import { USER_UPDATE_RESET } from "../constants/userConsts";
+
 const ProfileScreen = ({ location, history }) => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
@@ -20,6 +23,8 @@ const ProfileScreen = ({ location, history }) => {
   const { userInfo } = userLogin;
   const userUpdateDetail = useSelector((state) => state.userUpdateDetail);
   const { success } = userUpdateDetail;
+  const myOrders = useSelector((state) => state.orderListMy);
+  const { orders, loading: loadingOrders, error: errorOrders } = myOrders;
 
   useEffect(() => {
     //check if user is logged in
@@ -30,6 +35,7 @@ const ProfileScreen = ({ location, history }) => {
         // if no user or user already updated get user and empty state in userUpdateDetail
         dispatch({ type: USER_UPDATE_RESET });
         dispatch(getUserDetails("profile"));
+        dispatch(getMyOrders());
       } else {
         setName(user.name);
         setEmail(user.email);
@@ -102,6 +108,81 @@ const ProfileScreen = ({ location, history }) => {
               Update
             </Button>
           </Form>
+        )}
+      </Col>
+      <Col md={9}>
+        <h2>My Orders</h2>
+        {loadingOrders ? (
+          <Loader></Loader>
+        ) : errorOrders ? (
+          <Message variant="danger">{errorOrders}</Message>
+        ) : (
+          <Table
+            variant="dark"
+            striped
+            bordered
+            hover
+            responsive
+            size="sm"
+            style={{ textAlign: "center" }}
+          >
+            <thead>
+              <tr>
+                <th>DATE</th>
+                <th>TOTAL</th>
+                <th>PAID</th>
+                <th>DELIVERED</th>
+                <th>DETAILS</th>
+              </tr>
+            </thead>
+            <tbody>
+              {orders.map((item, i) => {
+                const date = new Date(item.createdAt);
+                const year = date.getFullYear();
+                const month = date.getMonth() + 1;
+                const day = date.getDate();
+
+                return (
+                  <tr key={item._id}>
+                    <td>{`${day}/${month}/${year}`}</td>
+                    <td>${item.totalPrice}</td>
+                    <td>
+                      {item.isPaid ? (
+                        item.paidAt.substring(0, 10)
+                      ) : (
+                        <i
+                          className="fas fa-times"
+                          style={{
+                            color: "red",
+                            width: "100%",
+                          }}
+                        ></i>
+                      )}
+                    </td>
+                    <td>
+                      {item.isDelivered ? (
+                        item.deliveredAt.substring(0, 10)
+                      ) : (
+                        <i
+                          className="fas fa-times"
+                          style={{
+                            color: "red",
+                          }}
+                        ></i>
+                      )}
+                    </td>
+                    <td>
+                      <LinkContainer to={`/orders/${item._id}`}>
+                        <Button variant="outline-light" size="sm">
+                          Details
+                        </Button>
+                      </LinkContainer>
+                    </td>
+                  </tr>
+                );
+              })}
+            </tbody>
+          </Table>
         )}
       </Col>
     </Row>

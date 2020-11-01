@@ -45,7 +45,12 @@ export const orderReducer = (state = {}, action) => {
   }
 };
 export const orderDetailsReducer = (
-  state = { loading: true, orderItems: [], shippingAddress: {} },
+  state = {
+    loading: true,
+    orderItems: [],
+    shippingAddress: {},
+    confirmed: false,
+  },
   action
 ) => {
   const { type, payload } = action;
@@ -66,10 +71,15 @@ export const orderDetailsReducer = (
     case ORDER_DETAILS_REQUEST:
       return {
         ...state,
+
         loading: true,
         error: "",
       };
-
+    case ORDER_PAY_RESET:
+      return {
+        ...state,
+        orderItems: [],
+      };
     default:
       return state;
   }
