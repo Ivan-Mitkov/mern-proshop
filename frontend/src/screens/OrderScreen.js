@@ -147,6 +147,10 @@ const OrderScreen = ({ match }) => {
                   <Col>${order.totalPrice}</Col>
                 </Row>
               </ListGroup.Item>
+
+              <ListGroup.Item>
+                <Button variant="primary">Confirm Payment</Button>
+              </ListGroup.Item>
             </ListGroup>
           </Card>
         </Col>
