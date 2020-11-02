@@ -5,35 +5,46 @@ import { useDispatch, useSelector } from "react-redux";
 import FormContainer from "../components/formcontainer";
 import Message from "../components/message";
 import Loader from "../components/loader";
-import { getUserDetails } from "../actions/userActions";
-
+import { getUserDetails, updateUser } from "../actions/userActions";
+import { USER_UPDATE_ADMIN_RESET } from "../constants/userConsts";
 const UserEditScreen = ({ match, history }) => {
   const userId = match.params.id;
 
   const dispatch = useDispatch();
   const userDetails = useSelector((state) => state.userDetail);
-  //getting from redux state
   const { loading, error, user } = userDetails;
+  const userUpdate = useSelector((state) => state.userUpdate);
+  const {
+    loading: updateLoading,
+    error: updateError,
+    success: updateSuccess,
+  } = userUpdate;
   //if already logged in redirect
   useEffect(() => {
-    //if there is no user or user id doesn't match te id in url
-    //get the user
-    if (!user || user._id !== userId) {
-      dispatch(getUserDetails(userId));
+    if (updateSuccess) {
+      dispatch({ type: USER_UPDATE_ADMIN_RESET });
+      history.push("/admin/userlist");
     } else {
-      //there is an user
-      setEmail(user.email);
-      setName(user.name);
-      setIsAdmin(user.isAdmin);
+      //if there is no user or user id doesn't match te id in url
+      //get the user
+      if (!user || user._id !== userId) {
+        dispatch(getUserDetails(userId));
+      } else {
+        //there is an user
+        setEmail(user.email);
+        setName(user.name);
+        setIsAdmin(user.isAdmin);
+      }
     }
-  }, [user, userId, dispatch]);
+  }, [user, userId, dispatch, updateSuccess, history]);
 
   const [email, setEmail] = useState("");
   const [isAdmin, setIsAdmin] = useState(false);
   const [name, setName] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSubmit = (e, user) => {
     e.preventDefault();
+    dispatch(updateUser({ _id: user._id, name, isAdmin, email }));
   };
 
   return (
@@ -43,6 +54,8 @@ const UserEditScreen = ({ match, history }) => {
       </Link>
       <FormContainer>
         <h1>Edit User</h1>
+        {updateLoading && <Loader />}
+        {updateError && <Message variant="danger">{error}</Message>}
         {loading ? (
           <Loader></Loader>
         ) : error ? (
@@ -77,7 +90,11 @@ const UserEditScreen = ({ match, history }) => {
               ></Form.Check>
             </Form.Group>
 
-            <Button type="submit" variant="primary">
+            <Button
+              type="submit"
+              variant="primary"
+              onClick={(e) => handleSubmit(e, user)}
+            >
               Update
             </Button>
           </Form>

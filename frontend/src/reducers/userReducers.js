@@ -21,6 +21,10 @@ import {
   USER_DELETE_REQUEST,
   USER_DELETE_SUCCESS,
   USER_DELETE_FAIL,
+  USER_UPDATE_ADMIN_REQUEST,
+  USER_UPDATE_ADMIN_FAIL,
+  USER_UPDATE_ADMIN_SUCCESS,
+  USER_UPDATE_ADMIN_RESET,
 } from "../constants/userConsts";
 
 export const userLoginReducer = (state = {}, action) => {
@@ -160,39 +164,60 @@ export const userListReducer = (
         error: payload,
         loading: false,
       };
-      case USER_LIST_RESET:
-        return{
-          users:[]
-        }
+    case USER_LIST_RESET:
+      return {
+        users: [],
+      };
 
     default:
       return state;
   }
 };
-export const userDeleteReducer = (
-  state = { success:false },
-  action
-) => {
+export const userDeleteReducer = (state = { success: false }, action) => {
   const { type, payload } = action;
   switch (type) {
     case USER_DELETE_REQUEST:
       return {
-        success:false,
+        success: false,
         loading: true,
       };
     case USER_DELETE_SUCCESS:
       return {
-       success:true,
+        success: true,
         loading: false,
       };
     case USER_DELETE_FAIL:
       return {
-       success:false,
+        success: false,
         error: payload,
         loading: false,
       };
-     
 
+    default:
+      return state;
+  }
+};
+export const userUpdateReducer = (state = { user:{} }, action) => {
+  const { type, payload } = action;
+  switch (type) {
+    case USER_UPDATE_ADMIN_REQUEST:
+      return {
+        success: false,
+        loading: true,
+      };
+    case USER_UPDATE_ADMIN_SUCCESS:
+      return {
+        success: true,
+        loading: false,
+      };
+    case USER_UPDATE_ADMIN_FAIL:
+      return {
+        success: false,
+        error: payload,
+        loading: false,
+      };
+      case USER_UPDATE_ADMIN_RESET:
+        return{user:{}}
     default:
       return state;
   }
