@@ -17,6 +17,7 @@ import {
   USER_LIST_SUCCESS,
   USER_LIST_FAIL,
   USER_LIST_REQUEST,
+  USER_LIST_RESET,
 } from "../constants/userConsts";
 
 export const login = (email, password) => async (dispatch) => {
@@ -49,7 +50,10 @@ export const login = (email, password) => async (dispatch) => {
 export const logout = () => (dispatch) => {
   //clear state
   dispatch({ type: USER_LOGOUT });
-  dispatch({type:CLEAR_USER_DETAILS})
+  dispatch({ type: CLEAR_USER_DETAILS });
+  //clear admin data
+  //clear all users
+  dispatch({ type: USER_LIST_RESET });
   //clear local storage
   localStorage.removeItem("userInfo");
 };
@@ -150,9 +154,8 @@ export const getAllUsers = () => async (dispatch, getState) => {
         Authorization: `Bearer ${userInfo.token}`,
       },
     };
-    const { data } = await axios.get(`/api/users`, config);   
-    dispatch({ type: USER_LIST_SUCCESS, payload: data });  
-   
+    const { data } = await axios.get(`/api/users`, config);
+    dispatch({ type: USER_LIST_SUCCESS, payload: data });
   } catch (error) {
     dispatch({
       type: USER_LIST_FAIL,
