@@ -14,6 +14,9 @@ import {
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
   USER_UPDATE_RESET,
+  USER_LIST_REQUEST,
+  USER_LIST_SUCCESS,
+  USER_LIST_FAIL,
 } from "../constants/userConsts";
 
 export const userLoginReducer = (state = {}, action) => {
@@ -76,8 +79,8 @@ export const userDetailReducer = (state = {}, action) => {
     case USER_DETAILS_REQUEST:
       return {
         ...state,
-        user:null,
-        error:'',
+        user: null,
+        error: "",
         loading: true,
       };
     case USER_DETAILS_SUCCESS:
@@ -90,7 +93,7 @@ export const userDetailReducer = (state = {}, action) => {
     case USER_DETAILS_FAIL:
       return {
         ...state,
-        user:null,
+        user: null,
         error: payload,
         loading: false,
       };
@@ -106,7 +109,7 @@ export const userUpdateDetailReducer = (state = {}, action) => {
     case USER_UPDATE_REQUEST:
       return {
         ...state,
-        userInfo:null,
+        userInfo: null,
         success: false,
         loading: true,
       };
@@ -121,13 +124,39 @@ export const userUpdateDetailReducer = (state = {}, action) => {
     case USER_UPDATE_FAIL:
       return {
         ...state,
-        userInfo:null,
+        userInfo: null,
         error: payload,
         success: false,
         loading: false,
       };
     case USER_UPDATE_RESET:
       return {};
+    default:
+      return state;
+  }
+};
+export const userListReducer = (
+  state = { users: [], loading: true, error: "" },
+  action
+) => {
+  const { type, payload } = action;
+  switch (type) {
+    case USER_LIST_REQUEST:
+      return {
+        loading: true,
+      };
+    case USER_LIST_SUCCESS:
+      return {
+        users: payload,
+        loading: false,
+      };
+    case USER_LIST_FAIL:
+      return {
+        users: [],
+        error: payload,
+        loading: false,
+      };
+
     default:
       return state;
   }
