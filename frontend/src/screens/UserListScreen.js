@@ -4,13 +4,15 @@ import { Table, Button } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/message";
 import Loader from "../components/loader";
-import { getAllUsers } from "../actions/userActions";
+import { getAllUsers, deleteUser } from "../actions/userActions";
 
 const UserListScree = ({ history }) => {
   const dispatch = useDispatch();
   const { users, loading, error } = useSelector((state) => state.userList);
   const userLogin = useSelector((state) => state.userLogin);
   const { userInfo } = userLogin;
+  const userDelete = useSelector((state) => state.userDelete);
+  const { success: successDelete } = userDelete;
   useEffect(() => {
     //if not admin don't get user
     if (userInfo && userInfo.isAdmin) {
@@ -18,8 +20,13 @@ const UserListScree = ({ history }) => {
     } else {
       history.push("/login");
     }
-  }, [dispatch]);
-  const deleteHandler = (userId) => {};
+    // eslint-disable-next-line
+  }, [dispatch, userInfo, successDelete]);
+  const deleteHandler = (userId) => {
+    if (window.confirm("Are you sure")) {
+      dispatch(deleteUser(userId));
+    }
+  };
   //if admin logout or notadmin try
   if ((userInfo && !userInfo.isAdmin) || !userInfo)
     return <h1>Not Authorized</h1>;
