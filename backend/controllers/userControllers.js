@@ -130,7 +130,46 @@ const deleteUser = asyncHandler(async (req, res) => {
     throw new Error("User not found");
   }
 });
-
+//ADMIN ROUTES
+//@desc GET user by id
+//@route GET /api/users/:id
+//@private/admin
+const getUserById = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.id).select("-password");
+  if (user) {
+    res.json(user);
+  } else {
+    res.status(404);
+    throw new Error("User not found");
+  }
+});
+//ADMIN ROUTES
+//@desc UPDATE user profile
+//@route PUT /api/users/:id
+//@private/admin
+const updateUser = asyncHandler(async (req, res) => {
+  //get id from req object where middleware save user
+  //istead logged in user with req.user._id find it from req.params.id
+  //find this user in db
+  const user = await User.findById(req.params.id);
+  if (user) {
+    (user.name = req.body.name || user.name),
+      (user.email = req.body.email || user.email);
+      //not changing password but add admin
+    user.isAdmin = req.body.isAdmin;
+    const updatedUser = await user.save();
+    //don't return a token
+    return res.json({
+      _id: updatedUser._id,
+      name: updatedUser.name,
+      email: updatedUser.email,
+      isAdmin: updatedUser.isAdmin,
+    });
+  } else {
+    res.status(404);
+    throw new Error("user not found");
+  }
+});
 export {
   authUser,
   getUserProfile,
@@ -138,4 +177,6 @@ export {
   updateUserProfile,
   getAllUsers,
   deleteUser,
+  getUserById,
+  updateUser,
 };
