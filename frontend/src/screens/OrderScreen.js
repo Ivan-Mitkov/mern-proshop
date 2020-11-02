@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Button, Row, Col, ListGroup, Image, Card } from "react-bootstrap";
-import { useDispatch, useSelector, shallowEqual } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Message from "../components/message";
 import Loader from "../components/loader";
-import { getOrderDetails, getMyOrders } from "../actions/orderActions";
+import { getOrderDetails } from "../actions/orderActions";
 import { confirmPayment } from "../actions/cartActions";
 import { payOrder } from "../actions/orderActions";
 import { ORDER_PAY_RESET } from "../constants/orderConsts";
@@ -13,10 +13,9 @@ const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id;
   const dispatch = useDispatch();
   const orderDetails = useSelector((state) => state.orderDetails);
-  const { success, loading: payLoading } = useSelector(
+  const { success} = useSelector(
     (state) => state.orderPay
   );
-  console.log("Paid success", success);
   const { order, loading, error } = orderDetails;
   //Calculate Prices
   if (order) {
@@ -30,7 +29,7 @@ const OrderScreen = ({ match, history }) => {
 
       dispatch(getOrderDetails(orderId));
     }
-  }, [order, orderId, dispatch, payOrder, success]);
+  }, [order, orderId, dispatch, success]);
   const handleConfirm = () => {
     dispatch(confirmPayment());
     dispatch(payOrder(orderId));
