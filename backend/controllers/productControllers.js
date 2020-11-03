@@ -21,5 +21,19 @@ const getProductById = asyncHandler(async (req, res) => {
   //throw error wich is handled by custom error handler
   throw new Error("Product not found");
 });
+//@desc delete a product
+//@route DELETE /api/products:id
+//@private/admin
+//every admin can delete any product
+const deleteProduct = asyncHandler(async (req, res) => {
+  const product = await Product.findById(req.params.id);
+  if (product) {
+    await product.remove();
+  return  res.json({message:"Product removed"})
+  }
+  res.status(404);
+  //throw error wich is handled by custom error handler
+  throw new Error("Product not found");
+});
 
-export {getProducts,getProductById}
+export {getProducts,getProductById,deleteProduct}
