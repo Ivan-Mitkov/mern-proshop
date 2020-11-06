@@ -78,8 +78,8 @@ const updateOrderToPaid = asyncHandler(async (req, res) => {
 //@private
 const getMyOrders = asyncHandler(async (req, res) => {
   // console.log(req.user);
- 
-  const orders = await Order.find({ user: req.user._id});
+
+  const orders = await Order.find({ user: req.user._id });
 
   if (!orders) {
     res.status(404);
@@ -88,5 +88,17 @@ const getMyOrders = asyncHandler(async (req, res) => {
 
   return res.json(orders);
 });
+//@desc Get all orders
+//@route GET /api/orders
+//@private/admin
+const getOrders = asyncHandler(async (req, res) => {
+  const orders = await Order.find({}).populate('user','id name');
+  if (!orders) {
+    res.status(404);
+    throw new Error("No orders");
+  }
 
-export { addOrder, getOrder, updateOrderToPaid, getMyOrders };
+  return res.json(orders);
+});
+
+export { addOrder, getOrder, updateOrderToPaid, getMyOrders,getOrders };
