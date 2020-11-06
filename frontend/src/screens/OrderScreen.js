@@ -6,17 +6,20 @@ import Message from "../components/message";
 import Loader from "../components/loader";
 import { getOrderDetails } from "../actions/orderActions";
 import { confirmPayment } from "../actions/cartActions";
-import { payOrder } from "../actions/orderActions";
-import { ORDER_PAY_RESET } from "../constants/orderConsts";
+import { payOrder, deliverOrder } from "../actions/orderActions";
+import { ORDER_PAY_RESET, ORDER_DELIVER_RESET } from "../constants/orderConsts";
 
 const OrderScreen = ({ match, history }) => {
   const orderId = match.params.id;
   const dispatch = useDispatch();
+  const { userInfo } = useSelector((state) => state.userLogin);
   const orderDetails = useSelector((state) => state.orderDetails);
-  const { success} = useSelector(
-    (state) => state.orderPay
-  );
+  const { success } = useSelector((state) => state.orderPay);
   const { order, loading, error } = orderDetails;
+
+  const orderDeliver = useSelector((state) => state.orderDeliver);
+  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+
   //Calculate Prices
   if (order) {
     order.itemsPrice = Number(
@@ -24,15 +27,23 @@ const OrderScreen = ({ match, history }) => {
     );
   }
   useEffect(() => {
-    if (!order || success||order._id !== orderId) {
+    if (!userInfo) {
+      history.push("/login");
+    }
+    if (!order || success || order._id !== orderId || successDeliver) {
       dispatch({ type: ORDER_PAY_RESET });
-
+      dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
     }
-  }, [order, orderId, dispatch, success]);
+  }, [order, orderId, dispatch, success, successDeliver]);
+
   const handleConfirm = () => {
     dispatch(confirmPayment());
     dispatch(payOrder(orderId));
+  };
+
+  const deliverHandler = () => {
+    dispatch(deliverOrder(order));
   };
   return loading ? (
     <Loader></Loader>
@@ -165,6 +176,18 @@ const OrderScreen = ({ match, history }) => {
                   </Button>
                 )}
               </ListGroup.Item>
+              {userInfo &&
+                userInfo.isAdmin &&
+                order.isPaid &&
+                !order.isDelivered && (
+                  <ListGroup.Item>
+                    {!order.isDelivered && (
+                      <Button variant="primary" onClick={deliverHandler}>
+                        Mark as Delivered
+                      </Button>
+                    )}
+                  </ListGroup.Item>
+                )}
             </ListGroup>
           </Card>
         </Col>

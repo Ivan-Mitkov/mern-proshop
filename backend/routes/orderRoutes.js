@@ -5,6 +5,7 @@ import {
   updateOrderToPaid,
   getMyOrders,
   getOrders,
+  updateOrderToDelivered,
 } from "../controllers/orderController.js";
 import { protect, isAdmin } from "../middleware/authMiddleware.js";
 const router = express.Router();
@@ -16,5 +17,6 @@ router.get("/myorders", protect, getMyOrders);
 
 router.get("/:id", protect, getOrder);
 router.put("/:id/pay", protect, updateOrderToPaid);
+router.put("/:id/delivered", protect, isAdmin, updateOrderToDelivered);
 
 export default router;
