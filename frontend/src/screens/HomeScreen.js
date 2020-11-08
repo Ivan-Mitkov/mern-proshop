@@ -5,12 +5,14 @@ import Product from "../components/product";
 import { listProducts } from "../actions/productActions";
 import Spinner from "../components/loader";
 import Message from "../components/message";
+import Paginate from "../components/paginate";
 const HomeScreen = ({ match }) => {
   const dispatch = useDispatch();
   const keyword = match.params.keyword;
   const pageNumber = match.params.pageNumber || 1;
   const productList = useSelector((state) => state.productList, shallowEqual);
-  const { products, loading, error } = productList;
+  //get page and pages for pagination
+  const { products, loading, error, page, pages } = productList;
 
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber));
@@ -28,18 +30,25 @@ const HomeScreen = ({ match }) => {
       ) : error ? (
         <Message variant="danger">{error}</Message>
       ) : (
-        <Row>
-          {products &&
-            products.map((product, i) => {
-              return (
-                <Col key={product._id}>
-                  <Col sm={12} md={6} lg={4} xl={3}>
-                    <Product product={product} />
+        <>
+          <Row>
+            {products &&
+              products.map((product, i) => {
+                return (
+                  <Col key={product._id}>
+                    <Col sm={12} md={6} lg={4} xl={3}>
+                      <Product product={product} />
+                    </Col>
                   </Col>
-                </Col>
-              );
-            })}
-        </Row>
+                );
+              })}
+          </Row>
+          <Paginate
+            page={page}
+            pages={pages}
+            keyword={keyword ? keyword : ""}
+          ></Paginate>
+        </>
       )}
     </>
   );

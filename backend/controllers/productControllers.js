@@ -7,7 +7,7 @@ import Product from "../models/productModel.js";
 const getProducts = asyncHandler(async (req, res) => {
   /**Pagination */
   //how many products per page
-  const pageSize = 2;
+  const pageSize = 3;
   //which page number we are
   const page = Number(req.query.pageNumber) || 1;
 
@@ -29,7 +29,7 @@ const getProducts = asyncHandler(async (req, res) => {
   /**Search end */
   //Pagnation again
   //how many products in the result
-  const count = await Product.estimatedDocumentCount({ ...keyword });
+  const count = await Product.countDocuments({ ...keyword });
   const products = await Product.find({ ...keyword })
     .limit(pageSize)
     .skip(pageSize * (page - 1));

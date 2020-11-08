@@ -41,7 +41,7 @@ function App() {
               component={ProductEditScreen}
             />
 
-            <Route path="/search/:keyword" component={HomeScreen} />
+            <Route path="/search/:keyword" component={HomeScreen} exact />
             <Route path="/page/:pageNumber" component={HomeScreen} />
             <Route
               path="/search/:keyword/page/:pageNumber"
