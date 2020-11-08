@@ -18,7 +18,7 @@ const OrderScreen = ({ match, history }) => {
   const { order, loading, error } = orderDetails;
 
   const orderDeliver = useSelector((state) => state.orderDeliver);
-  const { loading: loadingDeliver, success: successDeliver } = orderDeliver;
+  const { success: successDeliver } = orderDeliver;
 
   //Calculate Prices
   if (order) {
@@ -27,6 +27,7 @@ const OrderScreen = ({ match, history }) => {
     );
   }
   useEffect(() => {
+    // console.log("Order screen");
     if (!userInfo) {
       history.push("/login");
     }
@@ -35,7 +36,7 @@ const OrderScreen = ({ match, history }) => {
       dispatch({ type: ORDER_DELIVER_RESET });
       dispatch(getOrderDetails(orderId));
     }
-  }, [order, orderId, dispatch, success, successDeliver]);
+  }, [order, orderId, dispatch, success, successDeliver, userInfo, history]);
 
   const handleConfirm = () => {
     dispatch(confirmPayment());

@@ -19,7 +19,7 @@ const HomeScreen = ({ match }) => {
 
   useEffect(() => {
     dispatch(listProducts(keyword, pageNumber));
-    console.log("Use effect Home");
+    // console.log("Use effect Home");
   }, [dispatch, keyword, pageNumber]);
 
   return (
