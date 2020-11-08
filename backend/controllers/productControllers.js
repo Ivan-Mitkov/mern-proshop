@@ -5,6 +5,13 @@ import Product from "../models/productModel.js";
 //@route GET /api/products
 //@public
 const getProducts = asyncHandler(async (req, res) => {
+  /**Pagination */
+  //how many products per page
+  const pageSize = 2;
+  //which page number we are
+  const page = Number(req.query.pageNumber) || 1;
+
+  /*SEARCH QUERY*/
   //see if there is search
   let keyword = "";
   if (req.query.keyword) {
@@ -19,9 +26,16 @@ const getProducts = asyncHandler(async (req, res) => {
   } else {
     keyword = {};
   }
-  const products = await Product.find({ ...keyword });
-  // console.log('server products',products)
-  res.json(products);
+  /**Search end */
+  //Pagnation again
+  //how many products in the result
+  const count = await Product.count({ ...keyword });
+  const products = await Product.find({ ...keyword })
+    .limit(pageSize)
+    .skip(pageSize * (page - 1));
+
+  // send products with limit and skip, on which page we are, and how many pages there are
+  res.json({ products, page, pages: Math.ceil(count / pageSize) });
 });
 //@desc fetch product
 //@route GET /api/products:id
