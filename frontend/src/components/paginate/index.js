@@ -7,9 +7,11 @@ const Paginate = ({ pages, page, isAdmin = false, keyword = "" }) => {
     pages > 1 && (
       <Pagination>
         {[...Array(pages).keys()].map((x) => {
-          const linkTo = keyword
-            ? `/search/${keyword}/page/${x + 1}`
-            : `/page/${x + 1}`;
+          const linkTo = !isAdmin
+            ? keyword
+              ? `/search/${keyword}/page/${x + 1}`
+              : `/page/${x + 1}`
+            : `/admin/productlist/${x + 1}`;
           return (
             <LinkContainer key={x + 1} to={linkTo}>
               <Pagination.Item activ={x + 1 === page ? x + 1 : "undefined"}>
