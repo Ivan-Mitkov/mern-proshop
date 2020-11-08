@@ -5,7 +5,21 @@ import Product from "../models/productModel.js";
 //@route GET /api/products
 //@public
 const getProducts = asyncHandler(async (req, res) => {
-  const products = await Product.find({});
+  //see if there is search
+  let keyword = "";
+  if (req.query.keyword) {
+    keyword = {
+      name: {
+        //name contains searchterm
+        $regex: req.query.keyword,
+        //case insensitive
+        $options: "i",
+      },
+    };
+  } else {
+    keyword = {};
+  }
+  const products = await Product.find({ ...keyword });
   // console.log('server products',products)
   res.json(products);
 });
@@ -133,5 +147,5 @@ export {
   deleteProduct,
   createProduct,
   updateProduct,
-  createReview
+  createReview,
 };

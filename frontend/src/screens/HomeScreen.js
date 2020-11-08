@@ -5,20 +5,21 @@ import Product from "../components/product";
 import { listProducts } from "../actions/productActions";
 import Spinner from "../components/loader";
 import Message from "../components/message";
-const HomeScreen = () => {
+const HomeScreen = ({ match }) => {
   const dispatch = useDispatch();
-
+  const keyword = match.params.keyword;
   const productList = useSelector((state) => state.productList, shallowEqual);
   const { products, loading, error } = productList;
 
   useEffect(() => {
-    dispatch(listProducts());
+    dispatch(listProducts(keyword));
     console.log("Use effect Home");
-  }, [dispatch]);
+  }, [dispatch, keyword]);
 
   return (
     <>
-      <h1>Latest Products</h1>
+      {keyword ? <h1>Search Results</h1> : <h1>Latest Products</h1>}
+      {products.length === 0 && <Message>Can not find products</Message>}
       {loading ? (
         <Spinner />
       ) : error ? (
