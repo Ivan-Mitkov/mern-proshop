@@ -6,6 +6,7 @@ import { listProducts } from "../actions/productActions";
 import Spinner from "../components/loader";
 import Message from "../components/message";
 import Paginate from "../components/paginate";
+import ProductCaroussel from "../components/productCaroussel";
 const HomeScreen = ({ match }) => {
   const dispatch = useDispatch();
   const keyword = match.params.keyword;
@@ -21,6 +22,7 @@ const HomeScreen = ({ match }) => {
 
   return (
     <>
+      {!keyword && <ProductCaroussel />}
       {keyword ? <h1>Search Results</h1> : <h1>Latest Products</h1>}
       {!loading && products.length === 0 && (
         <Message>Can not find products</Message>
