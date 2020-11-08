@@ -8,18 +8,21 @@ import Message from "../components/message";
 const HomeScreen = ({ match }) => {
   const dispatch = useDispatch();
   const keyword = match.params.keyword;
+  const pageNumber = match.params.pageNumber || 1;
   const productList = useSelector((state) => state.productList, shallowEqual);
   const { products, loading, error } = productList;
 
   useEffect(() => {
-    dispatch(listProducts(keyword));
+    dispatch(listProducts(keyword, pageNumber));
     console.log("Use effect Home");
-  }, [dispatch, keyword]);
+  }, [dispatch, keyword, pageNumber]);
 
   return (
     <>
       {keyword ? <h1>Search Results</h1> : <h1>Latest Products</h1>}
-      {products.length === 0 && <Message>Can not find products</Message>}
+      {!loading && products.length === 0 && (
+        <Message>Can not find products</Message>
+      )}
       {loading ? (
         <Spinner />
       ) : error ? (
