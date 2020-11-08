@@ -7,6 +7,8 @@ import Spinner from "../components/loader";
 import Message from "../components/message";
 import Paginate from "../components/paginate";
 import ProductCaroussel from "../components/productCaroussel";
+import Meta from "../components/meta";
+
 const HomeScreen = ({ match }) => {
   const dispatch = useDispatch();
   const keyword = match.params.keyword;
@@ -22,6 +24,7 @@ const HomeScreen = ({ match }) => {
 
   return (
     <>
+      <Meta />
       {!keyword && <ProductCaroussel />}
       {keyword ? <h1>Search Results</h1> : <h1>Latest Products</h1>}
       {!loading && products.length === 0 && (

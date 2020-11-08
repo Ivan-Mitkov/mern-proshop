@@ -18,6 +18,8 @@ import {
 } from "../actions/productActions";
 import Spinner from "../components/loader";
 import Message from "../components/message";
+import Meta from "../components/meta";
+
 import { PRODUCT_CREATE_REVIEW_RESET } from "../constants/productConsts";
 
 const ProductScreen = ({ history, match }) => {
@@ -84,6 +86,7 @@ const ProductScreen = ({ history, match }) => {
       ) : (
         <>
           <Row>
+            <Meta title={product.name} description={product.description} />
             <Col md={6}>
               <Image src={product.image} alt={product.name} fluid></Image>
             </Col>
