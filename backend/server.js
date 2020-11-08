@@ -16,8 +16,8 @@ connectDB();
 const app = express();
 //get request.body
 app.use(express.json());
-if(process.env.NODE_ENV==='development'){
-  app.use(morgan('dev'))
+if (process.env.NODE_ENV === "development") {
+  app.use(morgan("dev"));
 }
 //routes
 app.use("/api/users", userRoutes);
@@ -28,6 +28,15 @@ app.use("/api/upload", uploadRoutes);
 //create static folder
 // __dirname nod available with import syntax so we are using path.resolve()
 const __dirname = path.resolve();
+//prepare for heroku
+if (process.env.NODE_ENV === "production") {
+  //set build folder as static folder
+  app.use(express.static(path.join(__dirname, "/frontend/build")));
+  //set missing routes to home page
+  app.get("*", (req, res) =>
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"))
+  );
+}
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")));
 
 //Custom error handler middleware
