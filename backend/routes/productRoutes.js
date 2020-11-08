@@ -8,11 +8,14 @@ import {
   createProduct,
   updateProduct,
   createReview,
+  getTopProducts,
 } from "../controllers/productControllers.js";
 
 const router = express.Router();
 
 router.get("/", getProducts);
+router.get("/top", getTopProducts);
+
 router.get("/:id", getProductById);
 router.post("/", protect, isAdmin, createProduct);
 router.delete("/:id", protect, isAdmin, deleteProduct);
